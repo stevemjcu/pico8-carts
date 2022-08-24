@@ -1,0 +1,89 @@
+pico-8 cartridge // http://www.pico-8.com
+version 35
+__lua__
+
+mouse={}
+
+function mouse:init(t)
+	t=t or {}
+	setmetatable(t,self)
+	self.__index=self
+	t.c=7
+	return t
+end
+
+function mouse.step(t)
+	t.x=stat(32)
+	t.y=stat(33)
+	t.l=stat(34)&1!=0
+end
+
+function mouse.draw(t)
+	pset(t.x,t.y,t.c)
+end
+
+orb={}
+
+function orb:init(t)
+	t=t tr {}
+	setmetatable(t,self)
+	self.__index=self
+	t.x,t.y=64,64
+	t.w,t.c=4,1
+	return t
+end
+
+function orb.step(o)
+end
+
+function orb.draw(o)
+	fillp()
+	circfill(o.x,o.y,o.w,o.c)
+	fillp(▥)
+	circfill(o.x,o.y,o.w/2,12)
+end
+
+function _init()
+	m=mse:init()
+	o=orb:init()
+end
+
+function _update()
+	m.step(m)
+	o.step(o)
+end
+
+function _draw()
+	cls()
+	o.draw(o)
+	m.draw(m)
+	dbg()
+end
+
+function dbg()
+	color(11)
+	print("cpu:"..stat(2))
+	print("fps:"..stat(7))
+end
+-->8
+-- lib
+
+--poke(0x5f2d,1)
+--
+--function mse(i)
+-- local t={
+-- 	[0]=stat(32),
+-- 	[1]=stat(33),
+-- 	[2]=stat(34)&1!=0,
+-- 	[3]=stat(34)&2!=0,
+-- 	[4]=stat(34)&4!=0
+-- }
+-- return t[i]
+--end
+__gfx__
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00700700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00700700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

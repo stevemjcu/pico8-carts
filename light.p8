@@ -2,114 +2,86 @@ pico-8 cartridge // http://www.pico-8.com
 version 35
 __lua__
 
---
+-- oop
+-- flicker
+-- inertia
+-- blending
 
-pal(1,1+128,1)
-poke(24365,1)
+pal(1, 1 + 128, 1)
+poke(24365, 1)
 
---
+function circfillp(x, y, w, c, p)
+	fillp(p)
+	circfill(x, y, w, c)
+end
+
+function mag(x, y)
+	return sqrt(x*x + y*y)
+end
 
 function _init()
-	ll={
-		{x=48,y=48},
-		{x=80,y=80}
-	}
-	m={x=0,y=0,p=0,l=nil}
+ lights = {}
+	add(lights, {x = 48, y = 48, w = 16})
+	add(lights, {x = 80, y = 80, w = 24})
+	cursor = {}
+	cursor.x = 0
+	cursor.y = 0
+	cursor.pressed = 0
+	cursor.light = nil
+	flicker = {0.9, 0.95, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1.05, 1.1}
 end
 
 function _update()
-	m.x,m.y,m.p=mouse()
-	for l in all(ll) do
-		if m.l==nil and m.p==1 then
-			if isclose(m.x,m.y,l.x,l.y,3) then
-				m.l,m.x,m.y=l,l.x,l.y
+	cursor.x = stat(32)
+	cursor.y = stat(33)
+	cursor.pressed = stat(34)
+	for light in all(lights) do
+		if cursor.light == nil and cursor.pressed == 1 then
+		 local a = mag(cursor.x, cursor.y)
+			local b = mag(light.x, light.y)
+			if abs(a - b) < 3 then
+			 cursor.light = light
+				cursor.x = light.x
+				cursor.y = light.y
 			end
-		elseif m.p==0 then
-			m.l=nil
+		elseif cursor.pressed == 0 then
+			cursor.light = nil
 		end
-		if m.l!=nil then
-			m.l.x,m.l.y=m.x,m.y
+		if cursor.light != nil then
+			cursor.light.x = cursor.x
+			cursor.light.y = cursor.y
 		end
 	end
 end
 
 function _draw()
 	cls()
-	for l in all(ll) do
-		circfillp(l.x,l.y,14,1,▥)
+	for light in all(lights) do
+		light.f = light.w * rnd(flicker)
 	end
-	for l in all(ll) do
-		circfillp(l.x,l.y,8,0)
+	for light in all(lights) do
+		circfillp(light.x, light.y, light.f, 1, ▥)
 	end
-	for l in all(ll) do
-		circfillp(l.x,l.y,8,5,▥)
+	for light in all(lights) do
+		circfillp(light.x, light.y, 8, 0)
 	end
-	for l in all(ll) do
-		circfillp(l.x,l.y,2,7)
+	for light in all(lights) do
+		circfillp(light.x, light.y, 8, 5, ▥)
 	end
-	pset(m.x,m.y)
+	for light in all(lights) do
+		circfillp(light.x, light.y, 2, 7)
+	end
+	pset(cursor.x, cursor.y, 7)
 	debug()
 end
 
 function debug()
 	color(11)
-	print("m.x:"..m.x)
-	print("m.y:"..m.y)
-	print("m.p:"..tonum(m.p))
+	print("m.x:"..cursor.x)
+	print("m.y:"..cursor.y)
+	print("m.p:"..tonum(cursor.pressed))
 	print("fps:"..stat(7))
 end
-
---
-
-function circfillp(x,y,w,c,p)
-	fillp(p)
-	circfill(x,y,w,c,p)
-end
-
-function mouse()
-	return 
-		stat(32),
-		stat(33),
-		stat(34)
-end
-
---
-
-function isclose(x1,y1,x2,y2,d)
-	local dx=abs(x1-x2)
-	local dy=abs(y1-y2)
-	return sqrt(dx*dx+dy*dy)<=d
-end
-
---
-
-vec2={x=0,y=0}
-
-function vec2:new(o,x,y)
-	o=o or {}
-	setmetatable(o,self)
-	self.__index=self
-	self.x=x or 0
-	self.y=y or 0
-	return o
-end
-
-function vec2:mag()
-	return sqrt(x*x+y*y)
-end
-
-function vec2:nor()
- local m=self.mag()
-	local v=self.new()
- if(m==0) then
-		v.x,v.y=0,0
-	else 
-		v.x,v.y=x/m,y/m
-	end
- return v
-end
-
---
 
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
