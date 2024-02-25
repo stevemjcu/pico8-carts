@@ -14,12 +14,12 @@ function chainfill(p,o,n,r)
 end
 
 function init_fish(p)
-	p=p or {}
-	p.pos={x=64,y=64}
-	p.vel={x=0,y=0}
-	p.acc,p.rot=0,0
-	p.lr=0 --left/right
-	return p
+ p=p or {}
+ p.pos={x=64,y=64}
+ p.vel={x=0,y=0}
+ p.acc,p.rot=0,0
+ p.lr=0 --left/right
+ return p
 end
 
 //todo:
@@ -30,18 +30,18 @@ end
 
 function step_fish(p)
  local l,r,z
-	--handle input
-	if(btn(⬅️)) p.rot+=0.03
-	if(btn(➡️)) p.rot-=0.03
-	l=btnp(⬅️) and p.lr!=0
-	r=btnp(➡️) and p.lr!=1
-	if(l) p.acc+=0.1 p.lr=0
-	if(r) p.acc+=0.1 p.lr=1
-	--apply forces
+ --handle input
+ if(btn(⬅️)) p.rot+=0.03
+ if(btn(➡️)) p.rot-=0.03
+ l=btnp(⬅️) and p.lr!=0
+ r=btnp(➡️) and p.lr!=1
+ if(l) p.acc+=0.1 p.lr=0
+ if(r) p.acc+=0.1 p.lr=1
+ --apply forces
  p.vel+=dir(p.rot,p.acc)
  p.pos+=p.vel
-	p.acc*=0.965
-	p.vel*=0.85
+ p.acc*=0.965
+ p.vel*=0.85
 end
 
 //todo:
@@ -49,18 +49,18 @@ end
 // offset/fill draw fn?
 
 function draw_fish(p)
-	local pos,off
-	--draw shadow
-	pos=cpy(p.pos)+vec(0,16)
-	off=dir(p.rot,1)
-	color(0) fillp(▥)
-	chainfill(pos,off,3,2)
-	--draw body
-	pos={x=p.pos.x,y=p.pos.y}
-	pos.y+=sin(t()/2)*2 --bob
-	off=dir(p.rot,1)
-	color(13) fillp()
-	chainfill(pos,off,3,2)
+ local pos,off
+ --draw shadow
+ pos=cpy(p.pos)+vec(0,16)
+ off=dir(p.rot,1)
+ color(0) fillp(▥)
+ chainfill(pos,off,3,2)
+ --draw body
+ pos={x=p.pos.x,y=p.pos.y}
+ pos.y+=sin(t()/2)*2 --bob
+ off=dir(p.rot,1)
+ color(13) fillp()
+ chainfill(pos,off,3,2)
 end
 
 function _init()
@@ -105,14 +105,14 @@ end
 
 --get normal
 function nor(v)
-	local m=mag(v)
-	return v*(1/mag(v))
+ local m=mag(v)
+ return v*(1/mag(v))
 end
 
 --get magnitude
 function mag(v)
  local x,y=v.x,v.y
-	return sqrt(x*x+y*y)
+ return sqrt(x*x+y*y)
 end
 
 --get sum
