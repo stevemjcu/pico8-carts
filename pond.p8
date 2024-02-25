@@ -1,5 +1,5 @@
 pico-8 cartridge // http://www.pico-8.com
-version 35
+version 38
 __lua__
 -- pond.p8
 -- by zapp
@@ -70,7 +70,7 @@ end
 ::draw::
 	cls(1)
 	fish.draw(f)
-	print("cpu:"..(stat(1)*100).."%")
+	print("cpu:"..stat(1))
 	flip()
 goto step
 __gfx__
