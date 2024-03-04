@@ -1,34 +1,27 @@
 pico-8 cartridge // http://www.pico-8.com
 version 38
 __lua__
--- pond | by zapphique
+-- pond 
+-- by zapphique
 
 -- draw series of circles
 -- p=pos, o=off, n=cnt, r=rad
 function chainfill(p,o,n,r)
-	local v=v2:new(p)
+	p=v2:new(p)
 	for i=1,n do
-		circfill(v.x,v.y,r)
-		v+=o
+		circfill(p.x,p.y,r)
+		p+=o
 	end
 end
 
 function init_fish(p)
 	p=p or {}
-	p.pos={x=64,y=64}
-	p.vel={x=0,y=0}
+	p.pos=v2:new(64,64)
+	p.vel=v2:new(0,0)
 	p.acc,p.rot=0,0
 	p.lr=0 --left/right
 	return p
 end
-
---[[
-todo:
-	clean up movement code
-	prevent hold l and r
-	relate force w/ rot
-	friction vec to acc only
-]]
 
 function step_fish(p)
 	local l,r
@@ -46,17 +39,11 @@ function step_fish(p)
 	p.pos+=p.vel
 end
 
---[[
-todo:
-  genericize draw shadow
-  offset/fill draw fn?
-  or draw to mask first?
-]]
-
 function draw_fish(p)
 	local pos,off
 	-- draw shadow
-	pos=p.pos+v2:new(0,16)
+	pos=v2:new(p.pos)
+	pos.y+=16
 	off=v2:dir(p.rot,1)
 	color(0) fillp(▥)
 	chainfill(pos,off,3,2)
@@ -83,8 +70,7 @@ function _draw()
 end
 
 -->8
-
--- region vectors
+-- vector
 
 v2={}
 
@@ -94,7 +80,7 @@ function v2:new(x,y)
 	if type(x)=="table" then
 		v={x=x.x,y=x.y}
 	else
-	if(y==nil) y=x
+		if(y==nil) y=x
 		v={x=x,y=y}
 	end
 	setmetatable(v,v2)
@@ -115,7 +101,7 @@ end
 -- get magnitude
 function v2:mag(v)
 	local x,y=v.x,v.y
-	return sqrt(x*x+y*y)
+	return sqrt(x^2+y^2)
 end
 
 -- get sum
@@ -132,42 +118,16 @@ end
 function v2.__mul(a,b)
 	if type(a)=="number" then
 		return v2:new(a*b.x,a*b.y)
-	end
-	if type(b)=="number" then
+	elseif type(b)=="number" then
 		return v2:new(a.x*b,a.y*b)
 	end
-	return a.x*b.x+a.y*b.y
+ return a.x*b.x+a.y*b.y
 end
-
--- endregion
-
--->8
-
---[[
-offscreen hint
-	show orientation
-food
-	float down
-	can eat
-	flash on timeout
-	extend timer
-particles
-	bubbles
-environment
-	seagrass or seaweed
-	circfill moss
-	polyfill rocks
-	shadow by elevation
-		clipping/mask?
-	react to current
-smaller fish (boids)
-	avoid player
-]]
 
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00700700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00077000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00077000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000000660000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000000660000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00700700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
